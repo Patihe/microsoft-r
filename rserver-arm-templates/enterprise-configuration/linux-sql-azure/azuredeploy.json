@@ -344,13 +344,13 @@
                   "publisher": "Microsoft.Compute",
                   "settings": {
                     "fileUris": [
-                      "[concat(variables('scriptsUri'), 'Configure-WebNode.sh')]"                      
+                      "[concat(variables('scriptsUri'), 'Configure-WebNode.py')]"                      
                     ]
                   },
                   "typeHandlerVersion": "1.8",
                   "autoUpgradeMinorVersion": true,
                   "protectedSettings": {
-                    "commandToExecute": "[concat('bash Configure-WebNode.sh \"', parameters('adminPassword'), '\" \"', parameters('aadTenant'), '\" \"', parameters('aadClientId'), '\" \"', concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('databaseName'), ';User Id=', parameters('adminUsername'), '@', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ';Password=''', parameters('adminPassword'), ''';'), '\"')]"
+                    "commandToExecute": "[concat('bash Configure-WebNode.py \"', parameters('linuxOS'), '\" \"', parameters('adminPassword'), '\" \"', parameters('aadTenant'), '\" \"', parameters('aadClientId'), '\" \"', concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('databaseName'), ';User Id=', parameters('adminUsername'), '@', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ';Password=''', parameters('adminPassword'), ''';'), '\"')]"
                   },
                   "type": "CustomScriptExtension"
                 }
@@ -496,13 +496,13 @@
                   "publisher": "Microsoft.Compute",
                   "settings": {
                     "fileUris": [
-                      "[concat(variables('scriptsUri'), 'Configure-ComputeNode.sh')]"                      
+                      "[concat(variables('scriptsUri'), 'Configure-ComputeNode.py')]"                      
                     ]
                   },
                   "typeHandlerVersion": "1.8",
                   "autoUpgradeMinorVersion": true,
                   "protectedSettings": {
-                    "commandToExecute": "[concat('bash Configure-ComputeNode.sh \"', parameters('poolInitialSize'), '\" \"', parameters('poolMaxSize'), '\"')]"
+                    "commandToExecute": "[concat('python Configure-ComputeNode.py \"', parameters('poolInitialSize'), '\" \"', parameters('poolMaxSize'), '\"')]"
                   },
                   "type": "CustomScriptExtension"
                 }
