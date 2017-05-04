@@ -321,7 +321,7 @@
                         ],
                         "loadBalancerInboundNatPools": [
                           {
-                            "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('webNodeLoadBalancerName'), '/inboundNatPools/', variables('webNodeLoadBalancerNatPoolName'), 'RDP')]"
+                            "id": "[concat('/subscriptions/', subscription().subscriptionId,'/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Network/loadBalancers/', variables('webNodeLoadBalancerName'), '/inboundNatPools/', variables('webNodeLoadBalancerNatPoolName'), 'SSH')]"
                           }
                         ],
                         "ApplicationGatewayBackendAddressPools": [
@@ -679,7 +679,7 @@
         ],
         "inboundNatPools": [
           {
-            "name": "[concat(variables('webNodeLoadBalancerNatPoolName'), 'RDP')]",
+            "name": "[concat(variables('webNodeLoadBalancerNatPoolName'), 'SSH')]",
             "properties": {
               "frontendIPConfiguration": {
                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('webNodeLoadBalancerName')), '/frontendIPConfigurations/', variables('webNodeLoadBalancerFrontEndName'))]"
@@ -687,7 +687,7 @@
               "protocol": "tcp",
               "frontendPortRangeStart": "50000",
               "frontendPortRangeEnd": "50099",
-              "backendPort": "3389"
+              "backendPort": "22"
             }
           }
         ]
