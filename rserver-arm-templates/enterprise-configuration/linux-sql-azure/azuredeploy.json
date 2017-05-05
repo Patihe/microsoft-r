@@ -703,10 +703,7 @@
       "apiVersion": "[providers('Microsoft.Network','publicIPAddresses').apiVersions[0]]",
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
-        "idleTimeoutInMinutes" : 30,
-        "dnsSettings": {
-          "domainNameLabel": "[concat(toLower(parameters('dnsPrefix')), 'gw')]"
-        }
+        "idleTimeoutInMinutes" : 30
       }
     },
     {
