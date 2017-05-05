@@ -189,7 +189,7 @@
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('vnetName')]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-03-30",
+      "apiVersion": "[providers('Microsoft.Network','virtualNetworks').apiVersions[0]]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -747,6 +747,7 @@
       ],
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
+        "idleTimeoutInMinutes" : 30,
         "dnsSettings": {
           "domainNameLabel": "[toLower(parameters('dnsPrefix'))]"
         }
@@ -828,9 +829,10 @@
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('appGwPublicIPAddressName')]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-06-01",
+      "apiVersion": "[providers('Microsoft.Network','publicIPAddresses').apiVersions[0]]",
       "properties": {
-        "publicIPAllocationMethod": "Dynamic"
+        "publicIPAllocationMethod": "Dynamic",
+        "idleTimeoutInMinutes" : 30
       }
     },
     {

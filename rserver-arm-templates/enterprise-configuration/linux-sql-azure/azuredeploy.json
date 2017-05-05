@@ -201,7 +201,7 @@
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[concat('sa', variables('uniqueStringArray')[copyIndex()])]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2015-06-15",
+      "apiVersion": "[providers('Microsoft.Storage','storageAccounts').apiVersions[0]]",
       "copy": {
         "name": "storageLoop",
         "count": "[variables('saCount')]"
@@ -217,7 +217,7 @@
       "tags": {
         "displayName": "SqlServer"
       },
-      "apiVersion": "2014-04-01",
+      "apiVersion": "[providers('Microsoft.Sql','servers').apiVersions[0]]",
       "properties": {
         "administratorLogin": "[parameters('adminUsername')]",
         "administratorLoginPassword": "[parameters('adminPassword')]",
@@ -261,7 +261,7 @@
       "type": "Microsoft.Compute/virtualMachineScaleSets",
       "name": "WebNodes",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-03-30",
+      "apiVersion": "[providers('Microsoft.Compute','virtualMachineScaleSets').apiVersions[0]]",
       "dependsOn": [
         "storageLoop",
         "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
@@ -341,18 +341,18 @@
               {
                 "name": "customScript",
                 "properties": {
-                  "publisher": "Microsoft.Compute",
+                  "publisher": "Microsoft.OSTCExtensions",
                   "settings": {
                     "fileUris": [
                       "[concat(variables('scriptsUri'), 'Configure-WebNode.py')]"                      
                     ]
                   },
-                  "typeHandlerVersion": "1.8",
+                  "typeHandlerVersion": "1.4",
                   "autoUpgradeMinorVersion": true,
                   "protectedSettings": {
                     "commandToExecute": "[concat('python Configure-WebNode.py \"', parameters('linuxOS'), '\" \"', parameters('adminPassword'), '\" \"', parameters('aadTenant'), '\" \"', parameters('aadClientId'), '\" \"', concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('databaseName'), ';User Id=', parameters('adminUsername'), '@', reference(concat('Microsoft.Sql/servers/', variables('sqlserverName'))).fullyQualifiedDomainName, ';Password=''', parameters('adminPassword'), ''';'), '\"')]"
                   },
-                  "type": "CustomScriptExtension"
+                  "type": "CustomScriptForLinux"
                 }
               }
             ]
@@ -362,7 +362,7 @@
     },
     {
       "type": "Microsoft.Insights/autoscaleSettings",
-      "apiVersion": "2015-04-01",
+      "apiVersion": "[providers('Microsoft.Insights','autoscaleSettings').apiVersions[0]]",
       "name": "autoscalewn",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -428,7 +428,7 @@
       "type": "Microsoft.Compute/virtualMachineScaleSets",
       "name": "ComputeNodes",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-03-30",
+      "apiVersion": "[providers('Microsoft.Compute','virtualMachineScaleSets').apiVersions[0]]",
       "dependsOn": [
         "storageLoop",
         "[concat('Microsoft.Network/virtualNetworks/', variables('vnetName'))]",
@@ -493,18 +493,18 @@
               {
                 "name": "customScript",
                 "properties": {
-                  "publisher": "Microsoft.Compute",
+                  "publisher": "Microsoft.OSTCExtensions",
                   "settings": {
                     "fileUris": [
                       "[concat(variables('scriptsUri'), 'Configure-ComputeNode.py')]"                      
                     ]
                   },
-                  "typeHandlerVersion": "1.8",
+                  "typeHandlerVersion": "1.4",
                   "autoUpgradeMinorVersion": true,
                   "protectedSettings": {
                     "commandToExecute": "[concat('python Configure-ComputeNode.py \"', parameters('poolInitialSize'), '\" \"', parameters('poolMaxSize'), '\"')]"
                   },
-                  "type": "CustomScriptExtension"
+                  "type": "CustomScriptForLinux"
                 }
               }
             ]
@@ -514,7 +514,7 @@
     },
     {
       "type": "Microsoft.Insights/autoscaleSettings",
-      "apiVersion": "2015-04-01",
+      "apiVersion": "[providers('Microsoft.Insights','autoscaleSettings').apiVersions[0]]",
       "name": "autoscalecn",
       "location": "[resourceGroup().location]",
       "dependsOn": [
@@ -580,7 +580,7 @@
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('vnetName')]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-03-30",
+      "apiVersion": "[providers('Microsoft.Network','virtualNetworks').apiVersions[0]]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -613,7 +613,7 @@
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIPAddressName')]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-06-01",
+      "apiVersion": "[providers('Microsoft.Network','publicIPAddresses').apiVersions[0]]",
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "idleTimeoutInMinutes": 30,
@@ -626,7 +626,7 @@
       "type": "Microsoft.Network/loadBalancers",
       "name": "[variables('webNodeLoadBalancerName')]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-06-01",
+      "apiVersion": "[providers('Microsoft.Network','loadBalancers').apiVersions[0]]",
       "dependsOn": [
         "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]"
       ],
@@ -698,17 +698,20 @@
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('appGwPublicIPAddressName')]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-06-01",
+      "apiVersion": "[providers('Microsoft.Network','publicIPAddresses').apiVersions[0]]",
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
-        "idleTimeoutInMinutes" : 30
+        "idleTimeoutInMinutes" : 30,
+        "dnsSettings": {
+          "domainNameLabel": "[concat(toLower(parameters('dnsPrefix'), 'gw')]"
+        }
       }
     },
     {
       "type": "Microsoft.Network/applicationGateways",
       "name": "[variables('appGwName')]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-06-01",
+      "apiVersion": "[providers('Microsoft.Network','applicationGateways').apiVersions[0]]",
       "dependsOn": [
         "[variables('vnetID')]",
         "[concat('Microsoft.Network/publicIPAddresses/', variables('appGwPublicIPAddressName'))]"
