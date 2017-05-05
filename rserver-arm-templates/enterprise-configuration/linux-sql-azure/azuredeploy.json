@@ -703,7 +703,7 @@
         "publicIPAllocationMethod": "Dynamic",
         "idleTimeoutInMinutes" : 30,
         "dnsSettings": {
-          "domainNameLabel": "[concat(toLower(parameters('dnsPrefix'), 'gw')]"
+          "domainNameLabel": "[concat(toLower(parameters('dnsPrefix')), 'gw')]"
         }
       }
     },
