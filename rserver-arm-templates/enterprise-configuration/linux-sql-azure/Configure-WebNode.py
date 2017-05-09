@@ -19,12 +19,23 @@ data["ConnectionStrings"]["sqlserver"]["Enabled"] = True
 data["ConnectionStrings"]["sqlserver"]["Connection"] = sqlServerConnectionString
 data["ConnectionStrings"]["defaultDb"]["Enabled"] = False
 data["ConnectionStrings"]["defaultDb"]["Enabled"] = False
-data["BackEndConfiguration"]["Uris"]["Ranges"] =  ["http://10.0.1.1-255:12805"]
+data["BackEndConfiguration"]["Uris"]["Ranges"] =  ["http://10.0.0.5-40000:40099"]
 
 if aadTenant != "":
     data["Authentication"]["AzureActiveDirectory"]["Authority"] = "https://login.windows.net/" + aadTenant
     data["Authentication"]["AzureActiveDirectory"]["Audience"] = aadClientId
     data["Authentication"]["AzureActiveDirectory"]["Enabled"] = True
+
+if linuxOS != "Ubuntu":
+    data["Authentication"]["JWTSigningCertificate"]["Enabled"] = True
+    data["Authentication"]["JWTSigningCertificate"]["StoreName"] = ""
+    data["Authentication"]["JWTSigningCertificate"]["StoreLocation"] = "/usr/lib/ssl"
+    data["Authentication"]["JWTSigningCertificate"]["SubjectName"] = "CN=ACCVRAIZ1,OU=PKIACCV,O=ACCV,C=ES"
+else:
+    data["Authentication"]["JWTSigningCertificate"]["Enabled"] = True
+    data["Authentication"]["JWTSigningCertificate"]["StoreName"] = ""
+    data["Authentication"]["JWTSigningCertificate"]["StoreLocation"] = "/etc/pki/tls"
+    data["Authentication"]["JWTSigningCertificate"]["SubjectName"] = "C=US, O=Entrust.net, OU=www.entrust.net/CPS incorp. by ref. (limits liab.), OU=(c) 1999 Entrust.net Limited, CN=Entrust.net Secure Server Certification Authority"
 
 f = open(appSettingsFilePath, "w")
 json.dump(data, f, indent=4, sort_keys=False)

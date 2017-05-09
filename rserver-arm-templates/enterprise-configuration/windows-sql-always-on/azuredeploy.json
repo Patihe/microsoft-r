@@ -839,7 +839,7 @@
       "type": "Microsoft.Network/applicationGateways",
       "name": "[variables('appGwName')]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-06-01",
+      "apiVersion": "[providers('Microsoft.Network','applicationGateways').apiVersions[0]]",
       "dependsOn": [
         "[variables('vnetID')]",
         "[concat('Microsoft.Network/publicIPAddresses/', variables('appGwPublicIPAddressName'))]"
