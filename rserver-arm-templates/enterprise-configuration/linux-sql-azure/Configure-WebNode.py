@@ -13,7 +13,8 @@ sqlServerConnectionString=sys.argv[5]
 
 appSettingsFilePath = "/usr/lib64/microsoft-r/rserver/o16n/9.1.0/Microsoft.RServer.WebNode/appsettings.json"
 f = open(appSettingsFilePath, "r")
-data = json.load(f, object_pairs_hook=OrderedDict)
+jsondata = f.read()
+data = json.loads(jsondata, object_pairs_hook=OrderedDict)
 
 data["ConnectionStrings"]["sqlserver"]["Enabled"] = True
 data["ConnectionStrings"]["sqlserver"]["Connection"] = sqlServerConnectionString
