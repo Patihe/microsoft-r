@@ -20,7 +20,7 @@ data["ConnectionStrings"]["sqlserver"]["Enabled"] = True
 data["ConnectionStrings"]["sqlserver"]["Connection"] = sqlServerConnectionString
 data["ConnectionStrings"]["defaultDb"]["Enabled"] = False
 data["ConnectionStrings"]["defaultDb"]["Enabled"] = False
-data["BackEndConfiguration"]["Uris"]["Ranges"] =  ["http://10.0.0.5-40000:40099"]
+data["BackEndConfiguration"]["Uris"]["Ranges"] =  ["http://10.0.1.0-255:12805"]
 
 if aadTenant != "":
     data["Authentication"]["AzureActiveDirectory"]["Authority"] = "https://login.windows.net/" + aadTenant
