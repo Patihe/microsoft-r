@@ -13,7 +13,7 @@ sqlServerConnectionString=sys.argv[5]
 
 appSettingsFilePath = "/usr/lib64/microsoft-r/rserver/o16n/9.1.0/Microsoft.RServer.WebNode/appsettings.json"
 f = open(appSettingsFilePath, "r")
-jsondata = f.read()
+jsondata = f.read().decode("utf-8-sig").encode("utf-8").replace("\r\n","")
 data = json.loads(jsondata, object_pairs_hook=OrderedDict)
 
 data["ConnectionStrings"]["sqlserver"]["Enabled"] = True
@@ -40,6 +40,7 @@ else:
 
 f = open(appSettingsFilePath, "w")
 json.dump(data, f, indent=4, sort_keys=False)
+f.close()
 
 os.system("/usr/local/bin/dotnet /usr/lib64/microsoft-r/rserver/o16n/9.1.0/Microsoft.RServer.Utils.AdminUtil/Microsoft.RServer.Utils.AdminUtil.dll -silentwebnodeinstall \"" + password + "\"")
 
