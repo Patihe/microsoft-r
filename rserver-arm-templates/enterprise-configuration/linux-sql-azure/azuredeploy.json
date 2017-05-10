@@ -177,6 +177,7 @@
     "vnetName": "vnet",
     "subnetName": "subnet",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+    "networkSecurityGroupName": "[concat(parameters('dnsPrefix'), 'NSG')]",
     "subnetRef": "[concat(variables('vnetID'),'/subnets/', variables('subnetName'))]",
     "publicIPAddressName": "PublicIP",
     "webNodeLoadBalancerName": "webNodeLoadBalancer",
@@ -213,6 +214,58 @@
       },
       "kind": "Storage",
       "properties": {}
+    },
+    {
+      "apiVersion": "[providers('Microsoft.Network','networkSecurityGroups').apiVersions[0]]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[variables('networkSecurityGroupName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "SSH",
+            "properties": {
+              "description": "Allows SSH traffic",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "WebNode",
+            "properties": {
+              "description": "Allows WebNode traffic",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "12800",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "ComputeNode",
+            "properties": {
+              "description": "Allows ComputeNode traffic",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "12805",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 102,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
     },
     {
       "name": "[variables('sqlserverName')]",
@@ -598,6 +651,9 @@
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('vnetName')]",
       "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', variables('networkSecurityGroupName'))]"
+      ],
       "apiVersion": "[providers('Microsoft.Network','virtualNetworks').apiVersions[0]]",
       "properties": {
         "addressSpace": {
@@ -609,7 +665,10 @@
           {
             "name": "[variables('subnetName')]",
             "properties": {
-              "addressPrefix": "10.0.0.0/24"
+              "addressPrefix": "10.0.0.0/24",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
+              }
             }
           },
           {
